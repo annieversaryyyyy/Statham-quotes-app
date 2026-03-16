@@ -1,13 +1,20 @@
 import { useState } from "react";
-import { axiosApi } from "../../axiosApi";
 import "./AddQuote.css";
 import { categories } from "../../categories";
 import { useNavigate } from "react-router-dom";
 import Toast from "../../components/Toast/Toast";
 import Preloader from "../../components/Preloader/Preloader";
+import { axiosApi } from "../../axiosApi";
+
+interface IQuoteForm {
+  text: string;
+  author: string;
+  category: string;
+  categoryId?: string;
+}
 
 function AddQuote() {
-  const [quoteData, setQuoteData] = useState({
+  const [quoteData, setQuoteData] = useState<IQuoteForm>({
     text: "",
     author: "Джейсон Стетхем",
     category: "",
@@ -16,7 +23,7 @@ function AddQuote() {
   const [toastVisible, setToastVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const newQuote = async (e) => {
+  const newQuote = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const dataToSend = {
       ...quoteData,
@@ -32,6 +39,7 @@ function AddQuote() {
       }, 1000);
       setQuoteData({
         text: "",
+        author: "Джейсон Стетхем",
         category: "",
       });
     } catch (error) {
@@ -41,16 +49,19 @@ function AddQuote() {
     }
   };
 
-  const onChangeInput = (e) => {
+  const onChangeInput = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
 
     if (name === "category") {
       const found = categories.find((c) => c.title === value);
+      const categoryId = found?.id ?? "";
 
       setQuoteData((prev) => ({
         ...prev,
         category: value,
-        categoryId: found ? found.id : "",
+        categoryId,
       }));
       return;
     }

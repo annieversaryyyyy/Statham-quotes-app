@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
-import { axiosApi } from "../../axiosApi";
+import { useParams } from "react-router-dom";
 import { categories } from "../../categories";
+import { axiosApi } from "../../axiosApi";
 import "./Home.css";
 import Quote from "../../components/Quote/Quote";
 import CategoryPanel from "../../components/CategoryPanel/CategoryPanel";
-import { useParams } from "react-router-dom";
 import Preloader from "../../components/Preloader/Preloader";
 import Pagination from "../../components/Pagination/Pagination";
 import Toast from "../../components/Toast/Toast";
+import type { IQuote } from "./quote.types";
 
 function Home() {
-  const [quotes, setQuotes] = useState([]);
+  const [quotes, setQuotes] = useState<IQuote[]>([]);
   const [loading, setLoading] = useState(false);
-  const { id } = useParams();
+  const { id } = useParams<{ id?: string }>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(10);
+  // const [postsPerPage] = useState(10);
+  const postsPerPage = 10;
   const [toastVisible, setToastVisible] = useState(false);
 
   useEffect(() => {
@@ -27,14 +29,18 @@ function Home() {
           return;
         }
 
-        const loadedQuotes = Object.entries(data).map(([id, quote]) => ({
+        const loadedQuotes = Object.entries(
+          data as Record<string, Omit<IQuote, "firebaseId">>,
+        ).map(([id, quote]) => ({
           firebaseId: id,
           ...quote,
         }));
 
         setQuotes(loadedQuotes.reverse());
       } catch (error) {
-        console.log(error.message);
+        if (error instanceof Error) {
+          console.log(error.message);
+        }
       } finally {
         setLoading(false);
       }
@@ -46,7 +52,7 @@ function Home() {
     setCurrentPage(1);
   }, [id]);
 
-  const deleteQuote = async (firebaseId) => {
+  const deleteQuote = async (firebaseId: string) => {
     try {
       await axiosApi.delete(`quotes/${firebaseId}.json`);
       setToastVisible(true);
@@ -64,7 +70,7 @@ function Home() {
   const lastIndex = currentPage * postsPerPage;
   const firstIndex = lastIndex - postsPerPage;
   const currentPosts = filteredQuotes.slice(firstIndex, lastIndex);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   if (loading) return <Preloader />;
 

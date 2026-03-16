@@ -1,4 +1,9 @@
-export const categories = [
+export interface ICategory {
+  id: string;
+  title: string;
+}
+
+export const categories: ICategory[] = [
   { id: "all", title: "Все" },
   { id: "motivation", title: "Мотивация" },
   { id: "life", title: "О жизни" },

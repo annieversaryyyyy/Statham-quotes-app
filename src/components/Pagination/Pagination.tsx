@@ -1,6 +1,18 @@
 import "./Pagination.css";
 
-function Pagination({ postsPerPage, quotes, paginate,currentPage }) {
+interface IPaginationProps {
+  postsPerPage: number;
+  quotes: number;
+  paginate: (pageNumber: number) => void;
+  currentPage: number;
+}
+
+function Pagination({
+  postsPerPage,
+  quotes,
+  paginate,
+  currentPage,
+}: IPaginationProps) {
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(quotes / postsPerPage); i++) {
     pageNumbers.push(i);

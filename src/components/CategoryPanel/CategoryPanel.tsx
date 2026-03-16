@@ -1,9 +1,13 @@
 import "./CategoryPanel.css";
 import dsImg from "../../assets/mainPic.png";
 import { NavLink } from "react-router-dom";
-import { categories } from "../../categories";
+import { ICategory } from "../../categories";
 
-function CategoryPanel() {
+interface CategoryPanelProps {
+  categories: ICategory[];
+}
+
+function CategoryPanel({ categories }: CategoryPanelProps) {
   return (
     <>
       <ul className="category-list">
