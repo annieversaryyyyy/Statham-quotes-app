@@ -19,6 +19,7 @@
 
 ## Технологии
 
+- Typescript
 - React  
 - React Router DOM  
 - Axios  
